@@ -1,0 +1,241 @@
+<html>
+<head>
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<script src="jquery.min.js"></script>
+	<script src="bootstrap.min.js"></script>
+    <script src="angular.min.js"></script>
+</head>
+<body ng-app="app">
+
+<div class="container" ng-controller="appCtrl">
+	<h2 style="margin-left: 30%">Individual mode</h2>
+	<div class="panel panel-primary">
+		<div class="panel-heading">Individual mode</div>
+		<div class="panel-body">
+			<div class="form-group">
+				<label>Sentence 1</label>
+				<input type="text" class="form-control" ng-model="data.sen1" >
+			</div>
+			<div class="form-group">
+				<label>Sentence 2</label>
+				<input type="text" class="form-control" ng-model="data.sen2" >
+			</div>
+
+			<div class="form-group">
+				<div class="row">
+					<button type="button" class="btn btn-primary col-sm-2 col-sm-offset-5" ng-click="triplet(data)">
+						Compare
+					</button>
+				</div>
+				<div class="row" style="margin-top: 10px;">
+					<a href="./home.html">
+						<button type="button" class="btn btn-warning col-sm-2 col-sm-offset-5">Home</button>
+					</a>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<table class="col-sm-12 table table-bordered">
+		<thead>
+		<tr>
+			<th style="text-align: center">
+				Sentense 1
+			</th>
+			<th style="text-align: center">
+				Sentense 2
+			</th>
+		</tr>
+		<tr>
+			<td style="text-align: center" ng-repeat="x in sentences">
+				{{x}}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table class="table table-bordered">
+					<tr ng-if="loading1">
+						<td>
+							<div style="position: absolute; width: 100%; height: 100%; background: url('./loader.gif') no-repeat center; background-size: 65px 50px">
+							</div>
+						</td>
+					</tr>
+					<tr ng-repeat="x in triplets1[0]">
+						<td style="text-align: center">
+							<b>Subject</b>: {{x.sentence[0].Subject}}<br>
+							<b>Predicate</b>: {{x.sentence[0].Predicate}}<br>
+							<b>Object</b>: {{x.sentence[0].Object}}<br>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<table class="table table-bordered">
+					<tr ng-repeat="x in triplets2[0]">
+						<td style="text-align: center">
+							<b>Subject</b>: {{x.sentence[0].Subject}}<br>
+							<b>Predicate</b>: {{x.sentence[0].Predicate}}<br>
+							<b>Object</b>: {{x.sentence[0].Object}}<br>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table class="table table-bordered">
+					<tr ng-if="loading2">
+						<td>
+							<div style="position: absolute; width: 100%; height: 100%; background: url('./loader.gif') no-repeat center; background-size: 65px 50px">
+							</div>
+						</td>
+					</tr>
+					<tr ng-repeat="x in ner1[0]">
+						<td style="text-align: center">
+							<b>Subject</b>: {{x.ner[0].Subject}}<br>
+							<b>Predicate</b>: {{x.ner[0].Predicate}}<br>
+							<b>Object</b>: {{x.ner[0].Object}}<br>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<table class="table table-bordered">
+					<tr ng-repeat="x in ner2[0]">
+						<td style="text-align: center">
+							<b>Subject</b>: {{x.ner[0].Subject}}<br>
+							<b>Predicate</b>: {{x.ner[0].Predicate}}<br>
+							<b>Object</b>: {{x.ner[0].Object}}<br>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<table class="table table-bordered">
+					<tr ng-if="loading3">
+						<td>
+							<div style="position: absolute; width: 100%; height: 100%; background: url('./loader.gif') no-repeat center; background-size: 65px 50px">
+							</div>
+						</td>
+					</tr>
+					<tr ng-repeat="x in comparison[0]">
+						<td style="text-align: center">
+							{{x[0].Subject}} {{x[0].Predicate}} {{x[0].Object}}
+						</td>
+						<td style="text-align: center">
+							{{x[2]}}
+						</td>
+						<td style="text-align: center">
+							{{x[1].Subject}} {{x[1].Predicate}} {{x[1].Object}}
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		</thead>
+	</table>
+
+</div>
+
+<script>
+
+
+var app = angular.module('app', []);
+app.controller('appCtrl', ['$scope', '$http', function ($scope, $http) {
+
+    $scope.data = {};
+	$scope.data.sen1 = "Churchill declared war because, Hitler destroyed England.";
+	$scope.data.sen2 = "Hitler wrecked England. Churchill went to war.";
+
+	$scope.sentences = [];
+
+	$scope.triplets1 = [];
+	$scope.triplets2 = [];
+
+	$scope.ner1 = [];
+	$scope.ner2 = [];
+
+	$scope.loading1 = false;
+	$scope.loading2 = false;
+	$scope.loading3 = false;
+
+//    $scope.loading1 = true;
+//    $scope.loading2 = true;
+//    $scope.loading3 = true;
+
+    $scope.triplet = function (data) {
+
+        $scope.loading1 = true;
+        $scope.loading2 = true;
+        $scope.loading3 = true;
+
+
+        $scope.sentences = [];
+
+        $scope.triplets1 = [];
+        $scope.triplets2 = [];
+
+        $scope.ner1 = [];
+        $scope.ner2 = [];
+
+        $scope.comparison = [];
+
+        $http.post("http://127.0.0.1:8000/triplet_extraction/",data)
+            .then(function (result) {
+
+                $scope.loading1 = false;
+
+                var data = JSON.parse(result.data);
+
+                $scope.sentences.push(data.Sentence1.full_sentence);
+                $scope.sentences.push(data.Sentence2.full_sentence);
+
+                $scope.triplets1.push(data.Sentence1.triplets);
+                $scope.triplets2.push(data.Sentence2.triplets);
+
+                console.log($scope.triplets1);
+                console.log($scope.triplets2);
+            });
+
+
+        $http.post("http://127.0.0.1:8000/ner_extraction/",data)
+            .then(function (result) {
+
+                $scope.loading2 = false;
+
+                var data = JSON.parse(result.data);
+
+                $scope.ner1.push(data.Sentence1.triplets);
+                $scope.ner2.push(data.Sentence2.triplets);
+
+			});
+
+        $http.post("http://127.0.0.1:8000/mark_extraction/",data)
+            .then(function (result) {
+
+                $scope.loading3 = false;
+
+                var data = JSON.parse(result.data);
+
+                $scope.comparison.push(data.marks);
+
+                console.log($scope.comparison)
+
+            });
+
+    }
+
+
+
+}]);
+
+</script>
+
+
+</body>
+
+
+</html>

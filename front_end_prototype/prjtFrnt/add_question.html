@@ -1,0 +1,74 @@
+<html>
+<head>
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<script src="jquery.min.js"></script>
+	<script src="bootstrap.min.js"></script>
+    <script src="angular.min.js"></script>
+</head>
+<body ng-app="app">
+<div ng-if="loading" style="position: absolute; width: 100%; height: 100%; background: url('./loader.gif') no-repeat center; background-color: rgba(232,232,232,0.33)">
+</div>
+
+<div class="container" ng-controller="appCtrl">
+	<h2 style="margin-left: 30%">Add question</h2>
+	<div class="panel panel-primary">
+		<div class="panel-heading">Question</div>
+		<div class="panel-body">
+			<div class="form-group">
+				<label>Question</label>
+				<textarea class="form-control" rows="5" id="question" ng-model="data.question"></textarea>
+			</div>
+			<div class="form-group">
+				<label>Model Answer</label>
+				<textarea class="form-control" rows="5" id="modelAnswer" ng-model="data.answer"></textarea>
+			</div>
+			<div class="form-group">
+				<label>Mark</label>
+				<input type="text" class="form-control" id="mark" ng-model="data.mark"></input>
+			</div>
+			<button ng-click="addQuestions(data)" id="btn_submit" class="btn btn-primary" style="float: right">submit</button>
+			<button ng-click="dummyload()" class="btn btn-success" style="">Add Dummy Data</button>
+		</div>
+
+	</div>
+    <p>
+        <a href="./home.html">
+            <button type="button" class="btn btn-warning " style="margin-left: 45%;margin-top: 0%" >Home</button>
+        </a>
+    </p>
+</div>
+
+<script>
+
+
+var app = angular.module('app', []);
+app.controller('appCtrl', ['$scope', '$http', function ($scope, $http) {
+
+    $scope.loading = false;
+
+    $scope.addQuestions = function (data) {
+        $scope.loading = true;
+        $http.post("http://127.0.0.1:8000/add_questions/",data)
+            .then(function (result) {
+                $scope.loading = false;
+                alert("Question added successfully.");
+                $scope.data = {};
+            });
+    };
+
+    $scope.dummyload = function (data) {
+        $scope.data = {};
+        $scope.data.question = "Where do pandas live?";
+        $scope.data.answer = "Pandas live in China.";
+        $scope.data.mark = "6";
+    };
+
+}]);
+
+</script>
+
+
+</body>
+
+
+</html>

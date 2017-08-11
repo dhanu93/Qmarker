@@ -1,0 +1,99 @@
+<html>
+<head>
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<script src="jquery.min.js"></script>
+	<script src="bootstrap.min.js"></script>
+    <script src="angular.min.js"></script>
+</head>
+
+<body ng-app="app" ng-controller="markedAnswerCtrl">
+<h2 style="padding-left: 40%; padding-bottom: 4%">Training Mode</h2>
+	<div class="col-sm-6">
+		<table class="table table-striped">
+			<thead>
+			<tr>
+				<td>Questions</td>
+			</tr>
+			</thead>
+			<tbody id="trows">
+            <tr ng-repeat="x in questions" ng-click="loadQuestion(x.id,x.question)">
+                <td>{{x.question}}</td>
+            </tr>
+			</tbody>
+		</table>
+	</div>
+
+<div ng-if="loading" style="position: absolute; width: 100%; height: 100%; background: url('./loader.gif') no-repeat center; background-color: rgba(232,232,232,0.33)">
+</div>
+
+	<div class="col-sm-6">
+		<div class="container col-sm-10">
+            <Label>Question: {{selectedQuestion}}</Label>
+			<div class="form-group">
+				<label>Answer</label>
+				<textarea class="form-control" rows="5" id="teacherAnswer" ng-model="data.answer"></textarea>
+			</div>
+			<div class="form-group">
+				<label>Mark</label>
+				<input type="text" class="form-control"  id="mark" ng-model="data.mark"></input>
+			</div>
+			<button id="btn_submit" class="btn btn-primary" style="float: right" ng-click="submitAnswer(data)">submit</button>
+			<button class="btn btn-success"   ng-click="addSampleAnswer()">Add answer</button>
+		</div>
+
+        <p>
+            <a href="./home.html">
+                <button type="button" class="btn btn-warning " style="margin-left: 40%;margin-top: 10%" >Home</button>
+            </a>
+        </p>
+	</div>
+
+
+
+    <script>
+
+        var app = angular.module('app', []);
+        app.controller('markedAnswerCtrl', ['$scope', '$http', function ($scope, $http) {
+
+            $scope.loading = false;
+
+            $http
+                .get("http://127.0.0.1:8000/get_questions/")
+                .then(function (recipe) {
+                    $scope.questions = recipe.data;
+                });
+
+            $scope.loadQuestion = function (qid,question) {
+                $scope.selectedQuestion = question;
+                $scope.selectedQuestionID = qid;
+            };
+
+            $scope.submitAnswer = function (data) {
+                $scope.loading = true;
+                $http.post("http://127.0.0.1:8000/train_question/",{
+                    answer: data.answer,
+                    qid: $scope.selectedQuestionID,
+					mark: data.mark
+                })
+                    .then(function (result) {
+                        alert("Training completed successfully!")
+                        $scope.loading = false;
+                    });
+            }
+
+            $scope.addSampleAnswer = function () {
+                $scope.data = {};
+                $scope.data.answer = "Pandas live in India.";
+                $scope.data.mark = "0";
+            }
+
+
+
+        }]);
+
+	</script>
+
+</body>
+
+
+</html>

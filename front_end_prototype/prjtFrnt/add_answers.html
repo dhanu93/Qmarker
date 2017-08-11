@@ -1,0 +1,117 @@
+<html>
+<head>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <script src="jquery.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="angular.min.js"></script>
+</head>
+
+<body ng-app="app" ng-controller="addAnswerCtrl">
+<h2 style="padding-left: 40%; padding-bottom: 4%">Student Mode</h2>
+<div class="col-sm-6" >
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td>Questions</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="x in questions" >
+                <td ng-click="loadQuestion(x.id,x.question)">{{x.question}}</td>
+                <td>
+                    <button ng-click="showAnswer(x.id,x.question,x.answer)" class="btn btn-primary" style="float: right">Show model answer</button>
+                </td>
+            </tr>
+            <tr>
+                <td><br><b>Modal Answer : </b><br>{{Qanswer}}</td>
+            </tr>
+        </tbody>
+
+    </table>
+</div>
+
+<div ng-if="loading" style="position: absolute; width: 100%; height: 100%; background: url('./loader.gif') no-repeat center; background-color: rgba(232,232,232,0.33)">
+</div>
+
+<div class="col-sm-6">
+
+    <p>Question: {{selectedQuestion}}</p>
+    <div class="container col-sm-10">
+        <div class="form-group">
+            <label>Type your answer here</label>
+            <textarea class="form-control" rows="5" id="modelAnswer" ng-model="data.answer"></textarea>
+        </div>
+
+        <button ng-click="getMark(data)" class="btn btn-primary" style="float: right">submit</button>
+        <button class="btn btn-success"   ng-click="addSampleAnswer()">Add answer</button>
+
+    </div>
+
+    <div class="container col-sm-10">
+        <h3>Mark : {{mark}}</h3>
+    </div>
+    <p>
+        <a href="./home.html">
+            <button type="button" class="btn btn-warning " style="margin-left: 40%;margin-top: 10%" >Home</button>
+        </a>
+    </p>
+</div>
+
+
+<script>
+
+
+    var app = angular.module('app', []);
+    app.controller('addAnswerCtrl', ['$scope', '$http', function ($scope, $http) {
+
+        $scope.mark = 0;
+        $scope.loading = false;
+
+        $http.get("http://127.0.0.1:8000/get_questions/")
+            .then(function (recipe) {
+                $scope.questions = recipe.data;
+            });
+
+        $scope.getMark = function(data){
+
+            $scope.loading = true;
+
+            $scope.mark = "Processing..."
+            $http.post("http://127.0.0.1:8000/mark_question/",{
+                answer: data.answer,
+                qid: $scope.selectedQuestionID
+            })
+                .then(function (result) {
+                    $scope.mark = result.data;
+                    $scope.loading = false;
+                });
+        };
+
+        $scope.loadQuestion = function (qid,question,answer) {
+            $scope.selectedQuestion = question;
+            $scope.selectedQuestionID=qid;
+            $scope.Qanswer=answer;
+        }
+
+        $scope.showAnswer = function (qid,question,answer) {
+            $scope.Qanswer=answer;
+            $scope.selectedQuestion = question;
+            $scope.selectedQuestionID = qid;
+        }
+
+        $scope.addSampleAnswer = function () {
+            $scope.data = {};
+            $scope.data.answer = "Pandas live in India.";
+        }
+
+    }]);
+
+</script>
+
+</body>
+
+
+</html>
+
+
+</html>
