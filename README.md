@@ -1,2 +1,2 @@
 # Qmarker
-Qmarker answer essays and get a mark
+Qmarker answer essay questions and get a mark
