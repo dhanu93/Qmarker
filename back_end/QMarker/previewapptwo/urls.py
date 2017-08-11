@@ -1,0 +1,52 @@
+"""previewapptwo URL Configuration
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/1.9/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
+Including another URLconf
+    1. Add an import:  from blog import urls as blog_urls
+    2. Import the include() function: from django.conf.urls import url, include
+    3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
+"""
+from django.conf.urls import url, include
+from django.contrib import admin
+from rest_framework.urlpatterns import format_suffix_patterns
+from home import views
+
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    # url(r'^mcqs/', views.McqPaperList.as_view()),
+    url(r'^add_questions/', views.AddQuestions.as_view()),
+    url(r'^get_questions/', views.GetQuestions.as_view()),
+    url(r'^mark_question/', views.MarkQuestions.as_view()),
+    url(r'^train_question/', views.addTrainingData.as_view()),
+
+    # individuals
+    url(r'^triplet_extraction/', views.tripletExtraction.as_view()),
+    url(r'^ner_extraction/', views.nerExtraction.as_view()),
+    url(r'^mark_extraction/', views.sentenceComparision.as_view()),
+
+    # user management
+
+
+    # questioner management
+
+
+    # mcq management
+
+
+    # subject materials management
+
+
+    # question answering process
+
+
+]
+
+urlpatterns = format_suffix_patterns(urlpatterns)
