@@ -1,11 +1,14 @@
-var app = angular.module('app', []);
-app.controller('appCtrl', ['$scope', '$compile', function ($scope, $compile) {
+var app = angular.module('dashboard_main', []);
+app.controller('dashboard_main_controller', ['$scope', function ($scope) {
 
-    $scope.templatePage = 'dashboard.html';
-    $scope.accountType = 'Teacher';
+    $scope.templateURL = 'startup.html';
 
     $scope.LoadDashboard = function(){
-		$scope.templatePage = 'dashboard.html';
+        $scope.templateURL = 'startup.html';
+    };
+
+    $scope.AddPapers = function(){
+        $scope.templateURL = 'add_paper.html';
     };
 
 }]);

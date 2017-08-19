@@ -131,7 +131,7 @@
 
                       // Dropdowns Script
 						$(document).ready(function() {
-						  $('.dropdown-toggle').on('click', function(ev) {
+						  $(document).on('click', function(ev) {
 						    ev.stopImmediatePropagation();
 						    $(".dropdown-toggle").dropdown("active");
 						  });
