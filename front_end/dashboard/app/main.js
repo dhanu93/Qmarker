@@ -25,11 +25,17 @@ app.controller('dashboard_main_controller', ['$scope', '$compile', function ($sc
     	console.log(myElements);
     	angular.element(myElements[0].children[myElements[0].children.length - 2]).after(html);
     	$compile(html)($scope);
-    }
+        $compile(myElements);
+
+        var aaaab = angular.element(document.querySelector('.graph-form'));
+        //var parent = angular.element(myElements.parent());
+
+        console.log(aaaab.length);
+    };
 
     $scope.RemoveAddedQuestion = function(eve){
     	var myElements = angular.element(eve.currentTarget);
-    	var parent = angular.element(myElements.parent())
+    	var parent = angular.element(myElements.parent());
     	
     	console.log(parent.length);
 
@@ -38,6 +44,10 @@ app.controller('dashboard_main_controller', ['$scope', '$compile', function ($sc
     	}
 
     	parent.remove();
-    	$compile(parent);   	
-    }
+    };
+
+    var aaaa = angular.element(document.querySelector('.graph-form'));
+    //var parent = angular.element(myElements.parent());
+
+    console.log(aaaa.length);
 }]);
